@@ -6,6 +6,7 @@
 
 namespace py = pybind11;
 using namespace pybind11::literals;
+using rvp = py::return_value_policy;
 
 PYBIND11_MODULE(_core, m) {
   m.doc() = R"pbdoc(
@@ -21,13 +22,14 @@ PYBIND11_MODULE(_core, m) {
       .def_readwrite("a", &Color::a)
       .def(
           "from_python",
-          [](Color& self, const std::vector<uint8_t>& rgba) {
+          [](Color& self, const std::vector<uint8_t>& rgba) -> Color& {
             self.r = rgba[0];
             self.g = rgba[1];
             self.b = rgba[2];
             self.a = rgba[3];
+            return self;
           },
-          "rgba"_a)
+          "rgba"_a, rvp::reference_internal)
       .def("to_python",
            [](const Color& self) -> std::vector<uint8_t> {
              return {self.r, self.g, self.b, self.a};

@@ -14,3 +14,4 @@ coverage-report
 !.vscode/c_cpp_properties.json
 *.code-workspace
 build
+*.whl
