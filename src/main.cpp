@@ -85,33 +85,36 @@ PYBIND11_MODULE(_core, m) {
   m.def(
       "pixelmatch",
       [](const py::buffer& img1, const py::buffer& img2, const py::buffer* out,
-         const Options& options, size_t stride_in_pixels) -> int {
+         const Options& options) -> int {
         auto buf1 = img1.request();
         auto buf2 = img2.request();
         if (!validate_buffer_info(buf1, buf2)) {
           return -1;
         }
+
+        pixelmatch::span<const uint8_t> image1(reinterpret_cast<const uint8_t*>(buf1.ptr),
+                                               buf1.size);
+        pixelmatch::span<const uint8_t> image2(reinterpret_cast<const uint8_t*>(buf2.ptr),
+                                               buf2.size);
         pixelmatch::span<uint8_t> output(nullptr, 0);
-        uint8_t* out_ptr = nullptr;
         if (out) {
-          auto buf3 = out->request(true);
-          if (buf3.readonly || !validate_buffer_info(buf1, buf3)) {
+          auto buf = out->request(true);
+          if (buf.readonly || !validate_buffer_info(buf, buf1)) {
             return -1;
           }
-          out_ptr = reinterpret_cast<uint8_t*>(buf3.ptr);
-          output = pixelmatch::span<uint8_t>(reinterpret_cast<uint8_t*>(buf3.ptr), buf3.size);
+          output = pixelmatch::span<uint8_t>(reinterpret_cast<uint8_t*>(buf.ptr), buf.size);
         }
 
         int width = dbg(buf1.shape[0]);
         int height = dbg(buf1.shape[1]);
+        int stride_in_pixels = width;
 
-        return -1;
-        // return pixelmatch::pixelmatch();
+        return pixelmatch::pixelmatch(image1, image2, output, width, height, stride_in_pixels,
+                                      options);
       },
       "img1"_a, "img2"_a, py::kw_only(),  //
       "output"_a = nullptr,               //
-      "options"_a = Options(),            //
-      "stride_in_pixels"_a = 0);
+      "options"_a = Options());
 
 #ifdef VERSION_INFO
   m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
