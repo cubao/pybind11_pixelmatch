@@ -35,14 +35,23 @@ PYBIND11_MODULE(_core, m) {
            [](const Color& self) -> std::vector<uint8_t> {
              return {self.r, self.g, self.b, self.a};
            })
+      .def("clone", [](const Color& self) -> Color { return self; })
       //
       ;
 
-  // using Options = pixelmatch::Options;
-  //  py::class_<Options>(m, "Options", py::module_local()) //
-  //     .def(py::init<>())
-  //     //
-  //     ;
+  using Options = pixelmatch::Options;
+  py::class_<Options>(m, "Options", py::module_local())  //
+      .def(py::init<>())
+      .def_readwrite("threshold", &Options::threshold)
+      .def_readwrite("includeAA", &Options::includeAA)
+      .def_readwrite("alpha", &Options::alpha)
+      .def_readwrite("aaColor", &Options::aaColor, rvp::reference_internal)
+      .def_readwrite("diffColor", &Options::diffColor, rvp::reference_internal)
+      .def_readwrite("diffColorAlt", &Options::diffColorAlt, rvp::reference_internal)
+      .def_readwrite("diffMask", &Options::diffMask)
+      .def("clone", [](const Options& self) -> Options { return self; })
+      //
+      ;
 
 #ifdef VERSION_INFO
   m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
