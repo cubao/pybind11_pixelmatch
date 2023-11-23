@@ -2,6 +2,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#define DBG_MACRO_NO_WARNING
+#include "dbg.h"
+
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
 
@@ -88,6 +91,7 @@ PYBIND11_MODULE(_core, m) {
         if (!validate_buffer_info(buf1, buf2)) {
           return -1;
         }
+        pixelmatch::span<uint8_t> output(nullptr, 0);
         uint8_t* out_ptr = nullptr;
         if (out) {
           auto buf3 = out->request(true);
@@ -95,7 +99,12 @@ PYBIND11_MODULE(_core, m) {
             return -1;
           }
           out_ptr = reinterpret_cast<uint8_t*>(buf3.ptr);
+          output = pixelmatch::span<uint8_t>(reinterpret_cast<uint8_t*>(buf3.ptr), buf3.size);
         }
+
+        int width = dbg(buf1.shape[0]);
+        int height = dbg(buf1.shape[1]);
+
         return -1;
         // return pixelmatch::pixelmatch();
       },
