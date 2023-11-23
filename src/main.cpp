@@ -9,6 +9,22 @@ namespace py = pybind11;
 using namespace pybind11::literals;
 using rvp = py::return_value_policy;
 
+inline bool validate_buffer_info(const py::buffer_info& buf1, const py::buffer_info& buf2) {
+  // https://github.com/pybind/pybind11/blob/master/tests/test_buffers.cpp
+  // should be RGBA
+  if (buf1.ndim != 3 || buf2.ndim != 3) {
+    return false;
+  }
+  if (buf1.shape[0] != buf2.shape[0] || buf1.shape[1] != buf2.shape[1] ||
+      buf1.shape[2] != buf2.shape[2]) {
+    return false;
+  }
+  if (buf1.shape[2] != 4) {
+    return false;
+  }
+  return true;
+}
+
 PYBIND11_MODULE(_core, m) {
   m.doc() = R"pbdoc(
     )pbdoc";
@@ -52,6 +68,41 @@ PYBIND11_MODULE(_core, m) {
       .def("clone", [](const Options& self) -> Options { return self; })
       //
       ;
+
+  m.def(
+      "rgb2yiq",
+      [](uint8_t r, uint8_t g, uint8_t b) -> std::vector<float> {
+        float y = r * 0.29889531f + g * 0.58662247f + b * 0.11448223f;
+        float i = r * 0.59597799f - g * 0.27417610f - b * 0.32180189f;
+        float q = r * 0.21147017f - g * 0.52261711f + b * 0.31114694f;
+        return {y, i, q};
+      },
+      "r"_a, "g"_a, "b"_a);
+
+  m.def(
+      "pixelmatch",
+      [](const py::buffer& img1, const py::buffer& img2, const py::buffer* out,
+         const Options& options, size_t stride_in_pixels) -> int {
+        auto buf1 = img1.request();
+        auto buf2 = img2.request();
+        if (!validate_buffer_info(buf1, buf2)) {
+          return -1;
+        }
+        uint8_t* out_ptr = nullptr;
+        if (out) {
+          auto buf3 = out->request(true);
+          if (buf3.readonly || !validate_buffer_info(buf1, buf3)) {
+            return -1;
+          }
+          out_ptr = reinterpret_cast<uint8_t*>(buf3.ptr);
+        }
+        return -1;
+        // return pixelmatch::pixelmatch();
+      },
+      "img1"_a, "img2"_a, py::kw_only(),  //
+      "output"_a = nullptr,               //
+      "options"_a = Options(),            //
+      "stride_in_pixels"_a = 0);
 
 #ifdef VERSION_INFO
   m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
