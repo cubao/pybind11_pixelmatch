@@ -53,9 +53,9 @@ test_in_dev_container:
 
 PYTHON ?= python3
 python_install:
-	$(PYTHON) -m pip install .
+	$(PYTHON) -m pip install . --verbose
 python_build:
-	$(PYTHON) -m pip wheel .
+	$(PYTHON) -m pip wheel . --verbose
 python_sdist:
 	$(PYTHON) -m pip sdist .
 python_test: pytest
