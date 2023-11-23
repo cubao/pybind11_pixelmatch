@@ -105,8 +105,8 @@ PYBIND11_MODULE(_core, m) {
           output = pixelmatch::span<uint8_t>(reinterpret_cast<uint8_t*>(buf.ptr), buf.size);
         }
 
-        int width = dbg(buf1.shape[0]);
-        int height = dbg(buf1.shape[1]);
+        int height = dbg(buf1.shape[0]);
+        int width = dbg(buf1.shape[1]);
         int stride_in_pixels = width;
 
         return pixelmatch::pixelmatch(image1, image2, output, width, height, stride_in_pixels,

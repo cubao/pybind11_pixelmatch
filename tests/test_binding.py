@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from pybind11_pixelmatch import Color, Options
+from pathlib import Path
+
+from pybind11_pixelmatch import Color, Options, pixelmatch, read_image
 
 c = Color()
 assert c.to_python() == [0, 0, 0, 0]
@@ -33,3 +35,10 @@ assert opt.diffColor.to_python() == [231, 0, 0, 255]
 opt.diffColorAlt = Color(23, 45, 6, 7)
 assert opt.diffColorAlt is not None
 assert opt.diffColorAlt.to_python() == [23, 45, 6, 7]
+
+project_source_dir = str(Path(__file__).resolve().parent.parent)
+img1 = read_image(f"{project_source_dir}/data/pic1.png")
+img2 = read_image(f"{project_source_dir}/data/pic2.png")
+assert img1.shape == img2.shape == (955, 1857, 4)
+num = pixelmatch(img1.data, img2.data)
+print()
