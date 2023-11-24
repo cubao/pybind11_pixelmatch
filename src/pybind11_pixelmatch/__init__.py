@@ -37,20 +37,6 @@ def write_image(path, img):
     cv2.imwrite(path, img)
 
 
-def options_to_json(options: Options):
-    return {
-        "threshold": options.threshold,
-        "includeAA": options.includeAA,
-        "alpha": options.alpha,
-        "aaColor": options.aaColor.to_python(),
-        "diffColor": options.diffColor.to_python(),
-        "diffColorAlt": options.diffColorAlt.to_python()
-        if options.diffColorAlt is not None
-        else None,
-        "diffMask": options.diffMask,
-    }
-
-
 __all__ = [
     "__doc__",
     "__version__",
@@ -60,5 +46,4 @@ __all__ = [
     "pixelmatch",
     "read_image",
     "write_image",
-    "options_to_json",
 ]
