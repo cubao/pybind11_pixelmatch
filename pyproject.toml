@@ -5,7 +5,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "pybind11_pixelmatch"
-version = "0.0.1"
+version = "0.1.0"
 description="A C++17 port of the JavaScript pixelmatch library (with python binding), providing a small pixel-level image comparison library."
 readme = "README.md"
 authors = [
