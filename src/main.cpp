@@ -29,7 +29,8 @@ inline bool validate_buffer_info(const py::buffer_info& buf1, const py::buffer_i
 }
 
 inline int pixelmatch_fn(const py::buffer& img1, const py::buffer& img2,
-                         const py::buffer* out = nullptr, const Options& options = Options()) {
+                         const py::buffer* out = nullptr,
+                         const pixelmatch::Options& options = pixelmatch::Options()) {
   auto buf1 = img1.request();
   auto buf2 = img2.request();
   if (!validate_buffer_info(buf1, buf2)) {

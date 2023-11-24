@@ -41,6 +41,9 @@ assert opt.diffColorAlt.to_python() == [23, 45, 6, 7]
 project_source_dir = str(Path(__file__).resolve().parent.parent)
 img1 = read_image(f"{project_source_dir}/data/pic1.png")
 img2 = read_image(f"{project_source_dir}/data/pic2.png")
+num = pixelmatch(img1, img2)
+assert num == 163889
+
 assert img1.shape == img2.shape == (955, 1857, 4)
 diff = np.zeros(img1.shape, dtype=img1.dtype)
 num = pixelmatch(img1, img2, output=diff)
