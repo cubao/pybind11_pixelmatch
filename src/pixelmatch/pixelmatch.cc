@@ -290,9 +290,9 @@ int pixelmatch(span<const uint8_t> img1, span<const uint8_t> img2, span<uint8_t>
         } else {
           // Found substantial difference not caused by anti-aliasing; draw it as such.
           if (!output.empty()) {
-            drawPixel(output, pos,
-                      delta < 0.0f && options.diffColorAlt ? options.diffColorAlt.value()
-                                                           : options.diffColor);
+            drawPixel(
+                output, pos,
+                delta < 0.0f && options.diffColorAlt ? *options.diffColorAlt : options.diffColor);
           }
           diff++;
         }
