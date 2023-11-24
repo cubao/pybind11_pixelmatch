@@ -28,19 +28,18 @@ inline bool validate_buffer_info(const py::buffer_info& buf1, const py::buffer_i
 using Color = pixelmatch::Color;
 using Options = pixelmatch::Options;
 inline std::string stringify(const Color& self) {
-  return "rgba(" + std::to_string(self.r) + "," std::to_string(self.g) +
-         "," std::to_string(self.b) + "," std::to_string(self.a) + ")";
+  return "rgba(" + std::to_string(self.r) + "," + std::to_string(self.g) + "," +
+         std::to_string(self.b) + "," + std::to_string(self.a) + ")";
 }
 inline std::string stringify(const Options& self) {
-  return "{"
-         //
-         std::string("threshold=") +
-         std::to_string(self.threshold) + "," + std::string("includeAA=") +
-         (self.includeAA ? "true" : "false") + std::string("alpha=") + std::to_string(self.alpha) +
-         "," + std::string("aaColor=") + stringify(self.aaColor) + "," std::string("diffColor=") +
-         stringify(self.diffColor) + "," std::string("diffColorAlt=") +
-         (self.diffColorAlt ? stringify(self.diffColorAlt) : std::string("None")) +
-         std::string("diffMask=") + (self.diffMask ? "true" : "false") + "}";
+  return std::string("{threshold=") + std::to_string(self.threshold) +       //
+         std::string(",includeAA=") + (self.includeAA ? "true" : "false") +  //
+         std::string(",alpha=") + std::to_string(self.alpha) +               //
+         std::string(",aaColor=") + stringify(self.aaColor) +                //
+         std::string(",diffColor=") + stringify(self.diffColor) +            //
+         std::string(",diffColorAlt=") +
+         (self.diffColorAlt ? stringify(*self.diffColorAlt) : std::string("None")) +  //
+         std::string(",diffMask=") + (self.diffMask ? "true" : "false") + "}";
 }
 
 inline int pixelmatch_fn(const py::buffer& img1, const py::buffer& img2,
