@@ -7,7 +7,7 @@ import numpy as np
 from . import Color, Options, pixelmatch, read_image, write_image
 
 __aaColor = Color(255, 255, 0, 255)
-__diffColor = Color(255, 255, 0, 255)
+__diffColor = Color(255, 0, 0, 255)
 
 
 def main(
@@ -67,7 +67,7 @@ def main(
     i2 = read_image(img2)
     assert i1.shape == i2.shape, f"image size mismatch: {i1.shape} != {i2.shape}"
     diff = np.zeros(i1.shape, dtype=i1.dtype)
-    num = pixelmatch(i1, i2, diff, options)
+    num = pixelmatch(i1, i2, output=diff, options=options)
     write_image(output, diff)
     print(f"wrote to {output}")  # noqa: T201
     print(f"#differente_pixels: {num}")  # noqa: T201
