@@ -28,6 +28,29 @@ inline bool validate_buffer_info(const py::buffer_info& buf1, const py::buffer_i
   return true;
 }
 
+inline int pixelmatch_fn(const py::buffer& img1, const py::buffer& img2,
+                         const py::buffer* out = nullptr, const Options& options = Options()) {
+  auto buf1 = img1.request();
+  auto buf2 = img2.request();
+  if (!validate_buffer_info(buf1, buf2)) {
+    return -1;
+  }
+  pixelmatch::span<const uint8_t> image1(reinterpret_cast<const uint8_t*>(buf1.ptr), buf1.size);
+  pixelmatch::span<const uint8_t> image2(reinterpret_cast<const uint8_t*>(buf2.ptr), buf2.size);
+  pixelmatch::span<uint8_t> output(nullptr, 0);
+  if (out) {
+    auto buf = out->request(true);
+    if (buf.readonly || !validate_buffer_info(buf, buf1)) {
+      return -1;
+    }
+    output = pixelmatch::span<uint8_t>(reinterpret_cast<uint8_t*>(buf.ptr), buf.size);
+  }
+  int height = buf1.shape[0];
+  int width = buf1.shape[1];
+  int stride_in_pixels = width;
+  return pixelmatch::pixelmatch(image1, image2, output, width, height, stride_in_pixels, options);
+}
+
 PYBIND11_MODULE(_core, m) {
   m.doc() = R"pbdoc(
     )pbdoc";
@@ -84,36 +107,17 @@ PYBIND11_MODULE(_core, m) {
 
   m.def(
       "pixelmatch",
-      [](const py::buffer& img1, const py::buffer& img2, const py::buffer* out,
-         const Options& options) -> int {
-        auto buf1 = img1.request();
-        auto buf2 = img2.request();
-        if (!validate_buffer_info(buf1, buf2)) {
-          return -1;
-        }
-
-        pixelmatch::span<const uint8_t> image1(reinterpret_cast<const uint8_t*>(buf1.ptr),
-                                               buf1.size);
-        pixelmatch::span<const uint8_t> image2(reinterpret_cast<const uint8_t*>(buf2.ptr),
-                                               buf2.size);
-        pixelmatch::span<uint8_t> output(nullptr, 0);
-        if (out) {
-          auto buf = out->request(true);
-          if (buf.readonly || !validate_buffer_info(buf, buf1)) {
-            return -1;
-          }
-          output = pixelmatch::span<uint8_t>(reinterpret_cast<uint8_t*>(buf.ptr), buf.size);
-        }
-
-        int height = dbg(buf1.shape[0]);
-        int width = dbg(buf1.shape[1]);
-        int stride_in_pixels = width;
-
-        return pixelmatch::pixelmatch(image1, image2, output, width, height, stride_in_pixels,
-                                      options);
+      [](const py::buffer& img1, const py::buffer& img2, const py::buffer& out,
+         const Options& options) -> int { return pixelmatch_fn(img1, img2, &out, options); },
+      "img1"_a, "img2"_a, py::kw_only(),  //
+      "output"_a,                         //
+      "options"_a = Options());
+  m.def(
+      "pixelmatch",
+      [](const py::buffer& img1, const py::buffer& img2, const Options& options) -> int {
+        return pixelmatch_fn(img1, img2, nullptr, options);
       },
       "img1"_a, "img2"_a, py::kw_only(),  //
-      "output"_a = nullptr,               //
       "options"_a = Options());
 
 #ifdef VERSION_INFO

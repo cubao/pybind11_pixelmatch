@@ -15,3 +15,4 @@ coverage-report
 *.code-workspace
 build
 *.whl
+/*.png

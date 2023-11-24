@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pybind11_pixelmatch import Color, Options, pixelmatch, read_image
+import numpy as np
+
+from pybind11_pixelmatch import Color, Options, pixelmatch, read_image, write_image
 
 c = Color()
 assert c.to_python() == [0, 0, 0, 0]
@@ -40,5 +42,7 @@ project_source_dir = str(Path(__file__).resolve().parent.parent)
 img1 = read_image(f"{project_source_dir}/data/pic1.png")
 img2 = read_image(f"{project_source_dir}/data/pic2.png")
 assert img1.shape == img2.shape == (955, 1857, 4)
-num = pixelmatch(img1.data, img2.data)
-print()
+diff = np.zeros(img1.shape, dtype=img1.dtype)
+num = pixelmatch(img1, img2, output=diff)
+assert num == 163889
+write_image("diff.png", diff)
