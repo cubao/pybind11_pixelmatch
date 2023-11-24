@@ -13,3 +13,6 @@ coverage-report
 !.vscode/extensions.json
 !.vscode/c_cpp_properties.json
 *.code-workspace
+build
+*.whl
+/*.png
