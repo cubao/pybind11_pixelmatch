@@ -54,7 +54,7 @@ jobs:
       env:
         CIBW_ARCHS_MACOS: universal2
         CIBW_ARCHS_WINDOWS: auto ARM64
-        CIBW_TEST_SKIP: "*macosx* *win* *aarch64 cp312-* pp*"
+        CIBW_TEST_SKIP: "*macosx* *win* *aarch64 cp31* pp*"
         CIBW_ENVIRONMENT: "PIP_ONLY_BINARY=:all:"
 
     - name: Verify clean directory

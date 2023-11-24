@@ -2,9 +2,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#define DBG_MACRO_NO_WARNING
-#include "dbg.h"
-
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
 
@@ -26,6 +23,24 @@ inline bool validate_buffer_info(const py::buffer_info& buf1, const py::buffer_i
     return false;
   }
   return true;
+}
+
+using Color = pixelmatch::Color;
+using Options = pixelmatch::Options;
+inline std::string stringify(const Color& self) {
+  return "rgba(" + std::to_string(self.r) + "," std::to_string(self.g) +
+         "," std::to_string(self.b) + "," std::to_string(self.a) + ")";
+}
+inline std::string stringify(const Options& self) {
+  return "{"
+         //
+         std::string("threshold=") +
+         std::to_string(self.threshold) + "," + std::string("includeAA=") +
+         (self.includeAA ? "true" : "false") + std::string("alpha=") + std::to_string(self.alpha) +
+         "," + std::string("aaColor=") + stringify(self.aaColor) + "," std::string("diffColor=") +
+         stringify(self.diffColor) + "," std::string("diffColorAlt=") +
+         (self.diffColorAlt ? stringify(self.diffColorAlt) : std::string("None")) +
+         std::string("diffMask=") + (self.diffMask ? "true" : "false") + "}";
 }
 
 inline int pixelmatch_fn(const py::buffer& img1, const py::buffer& img2,
@@ -56,7 +71,6 @@ PYBIND11_MODULE(_core, m) {
   m.doc() = R"pbdoc(
     )pbdoc";
 
-  using Color = pixelmatch::Color;
   py::class_<Color>(m, "Color", py::module_local())  //
       .def(py::init<>())
       .def(py::init<uint8_t, uint8_t, uint8_t, uint8_t>(), "r"_a, "g"_a, "b"_a, "a"_a)
@@ -80,9 +94,8 @@ PYBIND11_MODULE(_core, m) {
            })
       .def("clone", [](const Color& self) -> Color { return self; })
       //
-      ;
+      .def("__str__", [](const Color& self) -> std::string { return stringify(self); });
 
-  using Options = pixelmatch::Options;
   py::class_<Options>(m, "Options", py::module_local())  //
       .def(py::init<>())
       .def_readwrite("threshold", &Options::threshold)
@@ -94,7 +107,7 @@ PYBIND11_MODULE(_core, m) {
       .def_readwrite("diffMask", &Options::diffMask)
       .def("clone", [](const Options& self) -> Options { return self; })
       //
-      ;
+      .def("__str__", [](const Options& self) -> std::string { return stringify(self); });
 
   m.def(
       "rgb2yiq",
