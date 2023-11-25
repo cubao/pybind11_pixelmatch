@@ -9,6 +9,7 @@ pip install pybind11-pixelmatch
 diff image
 
 ```
+pip install fire # for CLI
 python3 -m pybind11_pixelmatch --help
 python3 -m pybind11_pixelmatch data/pic1.png data/pic2.png diff_output.png
 ```
