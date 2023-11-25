@@ -1,3 +1,27 @@
+# about python package
+
+install
+
+```
+pip install pybind11-pixelmatch
+```
+
+diff image
+
+```
+python3 -m pybind11_pixelmatch --help
+python3 -m pybind11_pixelmatch data/pic1.png data/pic2.png diff_output.png
+```
+
+|/ | image |
+| img1 | ![](data/pic1.png) |
+| img2 | ![](data/pic2.png) |
+| diff | ![](data/diff.png) |
+
+> If you want a pure python package, then try `pip install pixelmatch`. But it's much slower.
+
+---
+
 # pixelmatch-cpp17
 
 [![Build Status](https://github.com/jwmcglynn/pixelmatch-cpp17/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/jwmcglynn/pixelmatch-cpp17/actions/workflows/main.yml) [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC) [![codecov](https://codecov.io/gh/jwmcglynn/pixelmatch-cpp17/branch/main/graph/badge.svg?token=0XMUH3F0RD)](https://codecov.io/gh/jwmcglynn/pixelmatch-cpp17)
