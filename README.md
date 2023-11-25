@@ -13,7 +13,8 @@ python3 -m pybind11_pixelmatch --help
 python3 -m pybind11_pixelmatch data/pic1.png data/pic2.png diff_output.png
 ```
 
-|/ | image |
+| label | image |
+| :--: | :--: |
 | img1 | ![](data/pic1.png) |
 | img2 | ![](data/pic2.png) |
 | diff | ![](data/diff.png) |
