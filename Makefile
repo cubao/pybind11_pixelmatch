@@ -53,9 +53,7 @@ test_in_dev_container:
 PYTHON ?= python3
 build:
 	# CMAKE_BUILD_PARALLEL_LEVEL=8
-	$(PYTHON) -m pip install --no-build-isolation --config-settings=editable.rebuild=true -ve.
-python_build:
-	$(PYTHON) -m pip wheel . --verbose
+	$(PYTHON) -m pip install --no-build-isolation --config-settings=editable.rebuild=true -Cbuild-dir=build -ve.
 python_install:
 	$(PYTHON) -m pip install . --verbose
 python_wheel:

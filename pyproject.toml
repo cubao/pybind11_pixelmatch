@@ -37,7 +37,6 @@ test = ["pytest"]
 wheel.expand-macos-universal-tags = true
 # cmake.build-type = "Debug"
 # build-dir = "build/{wheel_tag}"
-build-dir = "build"
 
 [tool.scikit-build.cmake.define]
 # SOME_DEFINE = "ON"
