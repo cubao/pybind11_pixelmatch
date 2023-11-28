@@ -32,8 +32,14 @@ dependencies = [
 test = ["pytest"]
 
 
+# docs: https://scikit-build-core.readthedocs.io/en/latest/configuration.html
 [tool.scikit-build]
 wheel.expand-macos-universal-tags = true
+# cmake.build-type = "Debug"
+# build-dir = "build/{wheel_tag}"
+
+[tool.scikit-build.cmake.define]
+# SOME_DEFINE = "ON"
 
 
 [tool.pytest.ini_options]
