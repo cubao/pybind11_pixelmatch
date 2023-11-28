@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.15...3.26)
 
+# https://scikit-build-core.readthedocs.io/en/latest/cmakelists.html#accessing-information
 project(
   ${SKBUILD_PROJECT_NAME}
   VERSION ${SKBUILD_PROJECT_VERSION}
@@ -25,6 +26,8 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif()
 
+# TODO, use set(PYBIND11_NEWPYTHON ON)?
+# https://scikit-build-core.readthedocs.io/en/latest/getting_started.html
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 find_package(pybind11 CONFIG REQUIRED)
 

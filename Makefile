@@ -1,8 +1,6 @@
 PROJECT_SOURCE_DIR ?= $(abspath ./)
 PROJECT_NAME ?= $(shell basename $(PROJECT_SOURCE_DIR))
 BUILD_DIR ?= $(PROJECT_SOURCE_DIR)/build
-INSTALL_DIR ?= $(BUILD_DIR)/install
-NUM_JOB ?= 8
 
 all:
 	@echo nothing special
@@ -51,14 +49,21 @@ test_in_dev_container:
 			--network host --security-opt seccomp=unconfined \
 			-v `pwd`:`pwd` -w `pwd` -it $(DEV_CONTAINER_IMAG) bash
 
+
 PYTHON ?= python3
-python_install:
-	$(PYTHON) -m pip install . --verbose
+build:
+	# CMAKE_BUILD_PARALLEL_LEVEL=8
+	$(PYTHON) -m pip install --no-build-isolation --config-settings=editable.rebuild=true -ve.
 python_build:
 	$(PYTHON) -m pip wheel . --verbose
+python_install:
+	$(PYTHON) -m pip install . --verbose
+python_wheel:
+	$(PYTHON) -m pip wheel . --verbose
 python_sdist:
-	$(PYTHON) -m pip sdist .
+	$(PYTHON) -m pip sdist . --verbose
 python_test: pytest
+.PHONY: build
 
 # conda create -y -n py36 python=3.6
 # conda create -y -n py37 python=3.7
