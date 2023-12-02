@@ -2,10 +2,13 @@ name: WASM
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+     - master
+     - tzx/231202
   pull_request:
     branches:
     - master
-    - tzx/231202
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
