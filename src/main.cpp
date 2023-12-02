@@ -72,7 +72,28 @@ PYBIND11_MODULE(_core, m) {
 
   py::class_<Color>(m, "Color", py::module_local())  //
       .def(py::init<>())
-      .def(py::init<uint8_t, uint8_t, uint8_t, uint8_t>(), "r"_a, "g"_a, "b"_a, "a"_a)
+      .def(py::init<uint8_t, uint8_t, uint8_t, uint8_t>(), "r"_a, "g"_a, "b"_a, "a"_a = 255)
+      .def(py::init([](const std::string& color) {
+             Color rgba;
+             int idx = 0;
+             if (color.substr(0, 2) == "0x") {
+               idx = 2;
+             } else if (color.substr(0, 1) == "#") {
+               idx = 1;
+             }
+             if (color.size() - idx >= 6) {
+               rgba.r = std::stoi(color.substr(idx, 2), nullptr, 16);
+               rgba.g = std::stoi(color.substr(idx + 2, 2), nullptr, 16);
+               rgba.b = std::stoi(color.substr(idx + 4, 2), nullptr, 16);
+             }
+             if (color.size() - idx >= 8) {
+               rgba.a = std::stoi(color.substr(idx + 6, 2), nullptr, 16);
+             } else {
+               rgba.a = 255;
+             }
+             return rgba;
+           }),
+           "hex"_a)
       .def_readwrite("r", &Color::r)
       .def_readwrite("g", &Color::g)
       .def_readwrite("b", &Color::b)

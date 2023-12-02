@@ -16,3 +16,5 @@ coverage-report
 build
 *.whl
 /*.png
+
+__pycache__

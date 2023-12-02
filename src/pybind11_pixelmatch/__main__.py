@@ -4,10 +4,7 @@ from typing import Optional
 
 import numpy as np
 
-from . import Color, Options, pixelmatch, read_image, write_image
-
-__aaColor = Color(255, 255, 0, 255)
-__diffColor = Color(255, 0, 0, 255)
+from . import Color, Options, normalize_color, pixelmatch, read_image, write_image
 
 
 def main(
@@ -18,8 +15,8 @@ def main(
     threshold: float = 0.1,
     includeAA: bool = False,
     alpha: float = 0.1,
-    aaColor: Color = __aaColor,
-    diffColor: Color = __diffColor,
+    aaColor: Color = "rgba(255,255,0,255)",
+    diffColor: Color = "rgba(255,0,0,255)",
     diffColorAlt: Optional[Color] = None,  # noqa: UP007
     diffMask: bool = False,
 ):
@@ -57,9 +54,9 @@ def main(
     options.threshold = threshold
     options.includeAA = includeAA
     options.alpha = alpha
-    options.aaColor = aaColor
-    options.diffColor = diffColor
-    options.diffColorAlt = diffColorAlt
+    options.aaColor = normalize_color(aaColor)
+    options.diffColor = normalize_color(diffColor)
+    options.diffColorAlt = normalize_color(diffColorAlt)
     options.diffMask = diffMask
     print(f"options: {options}")  # noqa: T201
 
