@@ -4,7 +4,14 @@ from pathlib import Path
 
 import numpy as np
 
-from pybind11_pixelmatch import Color, Options, pixelmatch, read_image, write_image, normalize_color
+from pybind11_pixelmatch import (
+    Color,
+    Options,
+    normalize_color,
+    pixelmatch,
+    read_image,
+    write_image,
+)
 
 
 def test_color():
@@ -16,12 +23,12 @@ def test_color():
     assert c.b == 5
     assert c.a == 7
 
-    c = Color('#ff00ff')
+    c = Color("#ff00ff")
     assert c.to_python() == [255, 0, 255, 255]
-    c = Color('#aabbccdd')
-    assert c.to_python() == [0xaa, 0xbb, 0xcc, 0xdd]
-    assert normalize_color('rgb(12,34,56)').to_python() == [12, 34, 56, 255]
-    assert normalize_color('rgb(12,34,56,78)').to_python() == [12, 34, 56, 78]
+    c = Color("#aabbccdd")
+    assert c.to_python() == [0xAA, 0xBB, 0xCC, 0xDD]
+    assert normalize_color("rgb(12,34,56)").to_python() == [12, 34, 56, 255]
+    assert normalize_color("rgb(12,34,56,78)").to_python() == [12, 34, 56, 78]
 
 
 def test_options():

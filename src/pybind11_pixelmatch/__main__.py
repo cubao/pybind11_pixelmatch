@@ -4,7 +4,7 @@ from typing import Optional
 
 import numpy as np
 
-from . import Color, Options, pixelmatch, read_image, write_image, normalize_color
+from . import Color, Options, normalize_color, pixelmatch, read_image, write_image
 
 
 def main(
@@ -15,8 +15,8 @@ def main(
     threshold: float = 0.1,
     includeAA: bool = False,
     alpha: float = 0.1,
-    aaColor: Color = 'rgba(255,255,0,255)',
-    diffColor: Color = 'rgba(255,0,0,255)',
+    aaColor: Color = "rgba(255,255,0,255)",
+    diffColor: Color = "rgba(255,0,0,255)",
     diffColorAlt: Optional[Color] = None,  # noqa: UP007
     diffMask: bool = False,
 ):
