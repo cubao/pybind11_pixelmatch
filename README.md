@@ -20,7 +20,20 @@ python3 -m pybind11_pixelmatch data/pic1.png data/pic2.png diff_output.png
 | img2 | ![](data/pic2.png) |
 | diff | ![](data/diff.png) |
 
-> If you want a pure python package, then try `pip install pixelmatch`. But it's much slower.
+```
+# diffColor -> delete
+# diffColorAlt -> insert
+python3 -m pybind11_pixelmatch data/pic1.png data/pic2.png --output data/diff.png --diffColor='#ff0000' --diffColorAlt='#00ff00'
+```
+
+| label | image |
+| :--: | :--: |
+| img1 | ![](data/pic3.png) |
+| img2 | ![](data/pic4.png) |
+| diff | ![](data/diff2.png) |
+
+> If you want a pure python package, then try `pip install pixelmatch`.
+But it's [much slower](https://github.com/whtsky/pixelmatch-py/issues/68#issuecomment-1826184122).
 
 ---
 
