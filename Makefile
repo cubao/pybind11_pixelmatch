@@ -1,6 +1,6 @@
 PROJECT_SOURCE_DIR ?= $(abspath ./)
 PROJECT_NAME ?= $(shell basename $(PROJECT_SOURCE_DIR))
-BUILD_DIR ?= $(PROJECT_SOURCE_DIR)/build
+NUM_JOBS ?= 8
 
 all:
 	@echo nothing special
@@ -15,7 +15,7 @@ reset_submodules:
 	git submodule update --init --recursive
 
 clean:
-	rm -rf $(BUILD_DIR) *.egg-info dist
+	rm -rf build *.egg-info dist
 force_clean:
 	docker run --rm -v `pwd`:`pwd` -w `pwd` -it alpine/make make clean
 
@@ -52,12 +52,12 @@ test_in_dev_container:
 
 PYTHON ?= python3
 build:
-	# CMAKE_BUILD_PARALLEL_LEVEL=8
-	$(PYTHON) -m pip install --no-build-isolation --config-settings=editable.rebuild=true -Cbuild-dir=build -ve.
+	$(PYTHON) -m pip install scikit_build_core pyproject_metadata pathspec pybind11
+	CMAKE_BUILD_PARALLEL_LEVEL=$(NUM_JOBS) $(PYTHON) -m pip install --no-build-isolation -Ceditable.rebuild=true -Cbuild-dir=build -ve.
 python_install:
 	$(PYTHON) -m pip install . --verbose
 python_wheel:
-	$(PYTHON) -m pip wheel . --verbose
+	$(PYTHON) -m pip wheel . -w build --verbose
 python_sdist:
 	$(PYTHON) -m pip sdist . --verbose
 python_test: pytest
