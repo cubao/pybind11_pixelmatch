@@ -32,6 +32,11 @@ python3 -m pybind11_pixelmatch data/pic1.png data/pic2.png --output data/diff.pn
 | img2 | ![](data/pic4.png) |
 | diff | ![](data/diff2.png) |
 
+Demo: (in chinese / 中文)
+
+-   code: viewer.py
+-   video: https://www.youtube.com/watch?v=HbDCNaOArXE
+
 > If you want a pure python package, then try `pip install pixelmatch`.
 But it's [much slower](https://github.com/whtsky/pixelmatch-py/issues/68#issuecomment-1826184122).
 
