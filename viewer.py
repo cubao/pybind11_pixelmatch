@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import json
-import os
 import sys
 import tkinter as tk
 from functools import lru_cache
+from pathlib import Path
 
 import cv2
 import mss
@@ -16,7 +16,7 @@ from pybind11_pixelmatch import read_image, write_image
 
 
 class ScreenMonitor:
-    def __init__(self, root, config_path: str = None):
+    def __init__(self, root, config_path: str | None = None):
         self.root = root
         self.root.title("屏幕对比查看器")
         self.root.geometry("600x500")
@@ -151,10 +151,10 @@ class ScreenMonitor:
 
     def load_config(self):
         path = self.config_path
-        if not path or not os.path.exists(path):
+        if not path or not Path(path).exists():
             return False
         logger.info(f"加载配置 {path}")
-        with open(path) as f:
+        with Path(path).open() as f:
             config = json.load(f)
         self.monitor_areas = config.get("monitor_areas", [])
         self.show_original.set(config.get("show_original", True))
@@ -172,9 +172,9 @@ class ScreenMonitor:
                 write_image(path, img)
                 logger.info(f"保存图片 {path}")
         if self.config_path:
-            path = os.path.abspath(self.config_path)
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            with open(path, "w") as f:
+            path = Path(self.config_path).resolve()
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with path.open("w") as f:
                 json.dump(
                     {
                         "monitor_areas": self.monitor_areas,
@@ -261,7 +261,7 @@ class ScreenMonitor:
         x0, x1 = sorted([self.start_x, self.end_x])
         y0, y1 = sorted([self.start_y, self.end_y])
         if x1 - x0 < 40 or y1 - y0 < 40:
-            logger.warning(f"窗口太小，忽略: {x1 - x0}x{y1 - y0}")
+            logger.warning(f"窗口太小,忽略: {x1 - x0}x{y1 - y0}")
             return
         area = (ax + x0, ay + y0, ax + x1, ay + y1)
         self.monitor_areas.append(area)
@@ -355,7 +355,7 @@ class ScreenMonitor:
                 stacked_img, (stacked_img.shape[1] // 2, stacked_img.shape[0] // 2)
             )
             stacked_img = np.vstack((stacked_img, diff))
-            # TODO，横着放
+            # TODO,横着放
         else:
             stacked_img = diff
         original_height, original_width = stacked_img.shape[:2]
@@ -388,7 +388,7 @@ class ScreenMonitor:
 
     def shift_image(self, img1, img2, sx, sy):
         """
-        如果 sx, sy 为 0，说明 img1 和 img2 是对齐的
+        如果 sx, sy 为 0,说明 img1 和 img2 是对齐的
         现在需要 img 偏移 sx,sy 能够和 img2 对齐
         请对齐并 crop 两个图片
         """
@@ -424,7 +424,8 @@ def which_monitor(x, y) -> tuple[int, int, int, int]:
             h = m["height"]
             if x0 <= x <= x0 + w and y0 <= y <= y0 + h:
                 return w, h, x0, y0
-    raise Exception("无法确认窗口所在显示器")
+    msg = "无法确认窗口所在显示器"
+    raise Exception(msg)
 
 
 def img2gray(img: np.ndarray) -> np.ndarray:
@@ -435,8 +436,7 @@ def img2gray(img: np.ndarray) -> np.ndarray:
         return img
     if img.shape[2] == 3:
         return cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    else:
-        return cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
+    return cv2.cvtColor(img, cv2.COLOR_RGBA2GRAY)
 
 
 def img2rgb(img: np.ndarray) -> np.ndarray:
@@ -448,7 +448,7 @@ def img2rgb(img: np.ndarray) -> np.ndarray:
 
 def split_image(img: np.ndarray) -> tuple[int, np.ndarray, np.ndarray]:
     """
-    img 是左右两张图片拼接而成，需要找到左右的分界线，使得图片能较好地分割为两部分
+    img 是左右两张图片拼接而成,需要找到左右的分界线,使得图片能较好地分割为两部分.
     Split an image that contains two images side by side.
 
     This function attempts to find the boundary between two images that are
@@ -665,19 +665,19 @@ def diff_image(
 
 if __name__ == "__main__":
     """
-    安装：
+    安装:
         pip install loguru mss opencv-python pillow>=8.0.0 pybind11-pixelmatch
 
     使用
-        打开界面后，有三种使用流程：
+        打开界面后,有三种使用流程:
         1.  画框监听
-            -   点击选择区域，在当前显示器画一个框（会自动分为左右两块区域，做 diff）
-            -  点击选择区域，画一个框，操作两次（会 diff 这两块区域）
-        2.  传入图片查看 diff（和上面的框类似，直接传入图片）
+            -   点击选择区域,在当前显示器画一个框(会自动分为左右两块区域,做 diff)
+            -  点击选择区域,画一个框,操作两次(会 diff 这两块区域)
+        2.  传入图片查看 diff(和上面的框类似,直接传入图片)
             -   python3 main.py img.png
             -   python3 main.py img1.png img2.png
         3.  加载配置启动
-            -   python3 main.py config.json，点击保存则会存储配置
+            -   python3 main.py config.json,点击保存则会存储配置
     """
     root = tk.Tk()
     root.iconbitmap("favicon.ico")
