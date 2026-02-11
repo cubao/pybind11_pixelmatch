@@ -1,16 +1,18 @@
 from __future__ import annotations
+
+import json
+import os
+import sys
 import tkinter as tk
-from PIL import ImageGrab, ImageTk, Image
-import time
-import numpy as np
+from functools import lru_cache
+
 import cv2
 import mss
-from functools import lru_cache
+import numpy as np
 from loguru import logger
-from pybind11_pixelmatch import write_image, read_image
-import json
-import sys
-import os
+from PIL import Image, ImageGrab, ImageTk
+
+from pybind11_pixelmatch import read_image, write_image
 
 
 class ScreenMonitor:
@@ -152,7 +154,7 @@ class ScreenMonitor:
         if not path or not os.path.exists(path):
             return False
         logger.info(f"加载配置 {path}")
-        with open(path, "r") as f:
+        with open(path) as f:
             config = json.load(f)
         self.monitor_areas = config.get("monitor_areas", [])
         self.show_original.set(config.get("show_original", True))
@@ -199,7 +201,7 @@ class ScreenMonitor:
         self.__destroy_overlay()
         curr_geom = self.root.winfo_geometry()
         curr_geom = self.root.winfo_geometry()
-        x, y = [int(x) for x in curr_geom.split("+")[-2:]]
+        x, y = (int(x) for x in curr_geom.split("+")[-2:])
         w, h, x, y = which_monitor(x, y)
 
         overlay = tk.Toplevel(self.root)
@@ -595,7 +597,7 @@ def diff_image_options(
     Returns:
         dict: Options for image difference visualization
     """
-    from pybind11_pixelmatch import normalize_color, Options
+    from pybind11_pixelmatch import Options, normalize_color
 
     options = Options()
     options.threshold = threshold

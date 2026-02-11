@@ -201,7 +201,8 @@ inline void drawPixel(span<uint8_t> output, size_t pos, Color color) noexcept {
   output[pos + 3] = color.a;
 }
 
-void drawGrayPixel(span<const uint8_t> img, size_t pos, float alpha, span<uint8_t> output) noexcept {
+void drawGrayPixel(span<const uint8_t> img, size_t pos, float alpha,
+                   span<uint8_t> output) noexcept {
   const uint8_t r = img[pos + 0];
   const uint8_t g = img[pos + 1];
   const uint8_t b = img[pos + 2];
