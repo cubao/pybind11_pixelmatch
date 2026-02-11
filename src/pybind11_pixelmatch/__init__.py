@@ -23,7 +23,7 @@ def read_image(path):
         A = np.ones(B.shape, dtype=B.dtype) * 255
         img = cv2.merge((R, G, B, A))
     elif img.shape[2] == 4:
-        img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGRA)
+        img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
     return img
 
 
