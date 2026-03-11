@@ -62,13 +62,12 @@ jobs:
         restore-keys: |
           cibw-pip-${{ matrix.os }}-
 
-    - uses: pypa/cibuildwheel@v3.3.1
+    - uses: pypa/cibuildwheel@v2.22
       env:
         CIBW_ARCHS_MACOS: universal2
         CIBW_ARCHS_WINDOWS: AMD64 ARM64
-        CIBW_SKIP: "pp* *musllinux* *_i686 cp314t-win*"
-        CIBW_TEST_SKIP: "*macosx* *win* *aarch64 cp314t-*"
-        CIBW_ENVIRONMENT: "PIP_ONLY_BINARY=:all:"
+        CIBW_SKIP: "pp* *musllinux* *_i686"
+        CIBW_TEST_SKIP: "*macosx* *win* *aarch64"
         # CIBW_BEFORE_BUILD: "pip install --prefer-binary fire numpy opencv-python"
 
     - name: Verify clean directory
