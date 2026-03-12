@@ -71,7 +71,7 @@ jobs:
         CIBW_ARCHS_WINDOWS: AMD64 ARM64
         CIBW_SKIP: "pp* *musllinux* *_i686"
         CIBW_TEST_SKIP: "*macosx* *win* *aarch64"
-        # CIBW_BEFORE_BUILD: "pip install --prefer-binary fire numpy opencv-python"
+        CIBW_DEPENDENCY_VERSIONS: latest
 
     - name: Verify clean directory
       run: git diff --exit-code
