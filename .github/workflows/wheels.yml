@@ -58,9 +58,12 @@ jobs:
           ~/Library/Caches/pip
           ~/.cache/pip
           ~/AppData/Local/pip/Cache
-        key: cibw-pip-${{ matrix.os }}-${{ hashFiles('pyproject.toml') }}
+          ~/Library/Caches/cibuildwheel
+          ~/.cache/cibuildwheel
+          ~/AppData/Local/pypa/cibuildwheel/Cache
+        key: cibw-${{ matrix.os }}-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          cibw-pip-${{ matrix.os }}-
+          cibw-${{ matrix.os }}-
 
     - uses: pypa/cibuildwheel@v2.22
       env:
