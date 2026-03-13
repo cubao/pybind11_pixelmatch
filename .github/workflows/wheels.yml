@@ -72,6 +72,8 @@ jobs:
         CIBW_SKIP: "pp* *musllinux* *_i686"
         CIBW_TEST_SKIP: "*macosx* *win* *aarch64"
         CIBW_DEPENDENCY_VERSIONS: latest
+        # Use uv to avoid transient GitHub rate limits
+        CIBW_BUILD_FRONTEND: "build[uv]"
 
     - name: Verify clean directory
       run: git diff --exit-code
