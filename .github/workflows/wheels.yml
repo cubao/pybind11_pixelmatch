@@ -65,6 +65,8 @@ jobs:
         restore-keys: |
           cibw-${{ matrix.os }}-
 
+    - uses: astral-sh/setup-uv@v7
+
     - uses: pypa/cibuildwheel@v2.22
       env:
         CIBW_ARCHS_MACOS: universal2
