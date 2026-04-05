@@ -82,8 +82,7 @@ def write_image(
     # pillow backend
     from PIL import Image
 
-    mode = "RGB" if img.shape[2] == 3 else "RGBA"
-    Image.fromarray(img, mode).save(path)
+    Image.fromarray(img).save(path)
 
 
 def normalize_color(rgba):
