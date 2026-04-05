@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, Optional
+from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
     import numpy as np
@@ -21,13 +21,13 @@ Backend = Literal["cv2", "pillow"]
 def read_image(
     path: str,
     *,
-    backend: Optional[Backend] = None,
+    backend: Backend | None = None,
 ) -> np.ndarray:
     assert Path(path).is_file(), f"{path} does not exist"
 
     if backend is None:
         try:
-            from PIL import Image  # noqa: F401
+            import PIL  # noqa: F401
 
             backend = "pillow"
         except ImportError:
@@ -57,13 +57,13 @@ def write_image(
     path: str,
     img: np.ndarray,
     *,
-    backend: Optional[Backend] = None,
+    backend: Backend | None = None,
 ) -> None:
     Path(path).resolve().parent.mkdir(parents=True, exist_ok=True)
 
     if backend is None:
         try:
-            from PIL import Image  # noqa: F401
+            import PIL  # noqa: F401
 
             backend = "pillow"
         except ImportError:
