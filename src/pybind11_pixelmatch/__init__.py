@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING, Literal, Optional
+
+if TYPE_CHECKING:
+    import numpy as np
 
 from ._core import (
     Color,
@@ -11,31 +15,75 @@ from ._core import (
     rgb2yiq,
 )
 
+Backend = Literal["cv2", "pillow"]
 
-def read_image(path):
-    import cv2
-    import numpy as np
 
+def read_image(
+    path: str,
+    *,
+    backend: Optional[Backend] = None,
+) -> np.ndarray:
     assert Path(path).is_file(), f"{path} does not exist"
-    img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
-    if img.shape[2] == 3:
-        B, G, R = cv2.split(img)
-        A = np.ones(B.shape, dtype=B.dtype) * 255
-        img = cv2.merge((R, G, B, A))
-    elif img.shape[2] == 4:
-        img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
-    return img
+
+    if backend is None:
+        try:
+            from PIL import Image  # noqa: F401
+
+            backend = "pillow"
+        except ImportError:
+            backend = "cv2"
+
+    if backend == "cv2":
+        import cv2
+        import numpy as np
+
+        img = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
+        if img.shape[2] == 3:
+            B, G, R = cv2.split(img)
+            A = np.ones(B.shape, dtype=B.dtype) * 255
+            img = cv2.merge((R, G, B, A))
+        elif img.shape[2] == 4:
+            img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
+        return img
+
+    # pillow backend
+    import numpy as np
+    from PIL import Image
+
+    return np.array(Image.open(path).convert("RGBA"))
 
 
-def write_image(path, img):
-    import cv2
-
-    if img.shape[2] == 3:
-        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    else:
-        img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGRA)
+def write_image(
+    path: str,
+    img: np.ndarray,
+    *,
+    backend: Optional[Backend] = None,
+) -> None:
     Path(path).resolve().parent.mkdir(parents=True, exist_ok=True)
-    cv2.imwrite(path, img)
+
+    if backend is None:
+        try:
+            from PIL import Image  # noqa: F401
+
+            backend = "pillow"
+        except ImportError:
+            backend = "cv2"
+
+    if backend == "cv2":
+        import cv2
+
+        if img.shape[2] == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+        else:
+            img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGRA)
+        cv2.imwrite(str(path), img)
+        return
+
+    # pillow backend
+    from PIL import Image
+
+    mode = "RGB" if img.shape[2] == 3 else "RGBA"
+    Image.fromarray(img, mode).save(path)
 
 
 def normalize_color(rgba):

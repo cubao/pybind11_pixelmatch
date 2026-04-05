@@ -5,7 +5,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "pybind11_pixelmatch"
-version = "0.1.5"
+version = "0.1.6"
 description="A C++17 port of the JavaScript pixelmatch library (with python binding), providing a small pixel-level image comparison library."
 readme = "README.md"
 authors = [
@@ -22,16 +22,13 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
 ]
-dependencies = [
-  "numpy",
-  "opencv-python",
-]
+dependencies = []
 
 [project.urls]
 Homepage = "https://github.com/cubao/pybind11_pixelmatch"
 
 [project.optional-dependencies]
-test = ["pytest"]
+test = ["pytest", "Pillow", "numpy", "opencv-python-headless"]
 
 
 # docs: https://scikit-build-core.readthedocs.io/en/latest/configuration.html
