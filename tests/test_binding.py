@@ -68,3 +68,26 @@ def test_pixelmatch():
     num = pixelmatch(img1, img2, output=diff)
     assert num == 163889
     write_image("diff.png", diff)
+
+
+def test_read_image_backends_equivalent():
+    project_source_dir = str(Path(__file__).resolve().parent.parent)
+    path = f"{project_source_dir}/data/pic1.png"
+
+    img_cv2 = read_image(path, backend="cv2")
+    img_pil = read_image(path, backend="pillow")
+
+    assert img_cv2.shape == img_pil.shape
+    assert img_cv2.dtype == img_pil.dtype
+    assert np.array_equal(img_cv2, img_pil)
+
+
+def test_write_image_round_trip(tmp_path):
+    project_source_dir = str(Path(__file__).resolve().parent.parent)
+    original = read_image(f"{project_source_dir}/data/pic1.png")
+
+    for backend in ("cv2", "pillow"):
+        out = str(tmp_path / f"out_{backend}.png")
+        write_image(out, original, backend=backend)
+        reloaded = read_image(out, backend=backend)
+        assert np.array_equal(original, reloaded), f"round-trip failed for {backend}"

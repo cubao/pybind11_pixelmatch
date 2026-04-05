@@ -20,7 +20,7 @@ force_clean:
 	docker run --rm -v `pwd`:`pwd` -w `pwd` -it alpine/make make clean
 
 pytest:
-	python3 -m pip install pytest numpy
+	python3 -m pip install pytest numpy pillow
 	pytest tests # --capture=tee-sys
 .PHONY: test pytest
 

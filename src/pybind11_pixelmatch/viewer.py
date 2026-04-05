@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import sys
 import tkinter as tk
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
 
 import cv2
@@ -571,7 +571,7 @@ def align_image(
     return warp_matrix, aligned
 
 
-@lru_cache(maxsize=None)
+@cache
 def diff_image_options(
     threshold: float = 0.1,
     include_aa: bool = False,
